@@ -40,7 +40,7 @@ function handleEdit(todo: ITodo) {
       <input type="text" v-model="inputContent" /> <button @click="handleAddOrUpdate">添加</button>
     </form>
     <ul>
-      <li v-for="todo in todoList" :key="todo.id">
+      <li class="todo" v-for="todo in todoList" :key="todo.id">
         <input type="checkbox" v-model="todo.completed" />
         <span class="todo-content" :class="{ completed: todo.completed }" :title="todo.content">{{
           todo.content
@@ -64,6 +64,11 @@ function handleEdit(todo: ITodo) {
   padding-bottom: 5px;
   margin-bottom: 5px;
   border-bottom: 1px solid;
+}
+
+.todo {
+  line-height: 1;
+  padding: 5px 0;
 }
 
 .todo-content {
