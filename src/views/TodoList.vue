@@ -1,41 +1,29 @@
 <script setup lang="ts">
+import { useTodoStore, type ITodo } from '@/stores/todo'
 import { ref } from 'vue'
 
-export interface ITodo {
-  id: number
-  content: string
-  completed: boolean
-}
+const { todoList, addTodo, deleteTodo } = useTodoStore()
 
 // 输入框内容
 const inputContent = ref('')
 // 当前编辑待办项
 const currentTodo = ref<ITodo>()
-// 待办列表
-const todoList = ref<ITodo[]>([])
 
-// 添加待办
-function handleAdd() {
+// 新增/更新待办
+function handleAddOrUpdate() {
   // 判断是否处于编辑状态
   if (currentTodo.value) {
     currentTodo.value.content = inputContent.value
     inputContent.value = ''
     currentTodo.value = undefined
   } else {
-    todoList.value.push({
+    addTodo({
       id: Date.now(),
       content: inputContent.value,
       completed: false,
     })
   }
-
   inputContent.value = ''
-}
-
-// 删除待办
-function handleDelete(id: number) {
-  const todoIndex = todoList.value.findIndex((todo) => todo.id === id)
-  todoList.value.splice(todoIndex, 1)
 }
 
 // 编辑待办
@@ -49,7 +37,7 @@ function handleEdit(todo: ITodo) {
   <main class="todo-list-container">
     <h1>Todo List</h1>
     <form @submit.prevent class="input-container">
-      <input type="text" v-model="inputContent" /> <button @click="handleAdd">添加</button>
+      <input type="text" v-model="inputContent" /> <button @click="handleAddOrUpdate">添加</button>
     </form>
     <ul>
       <li v-for="todo in todoList" :key="todo.id">
@@ -58,7 +46,7 @@ function handleEdit(todo: ITodo) {
           todo.content
         }}</span>
         <button @click="handleEdit(todo)">编辑</button>
-        <button @click="handleDelete(todo.id)">删除</button>
+        <button @click="deleteTodo(todo.id)">删除</button>
       </li>
     </ul>
   </main>
