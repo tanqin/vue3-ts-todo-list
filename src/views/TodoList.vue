@@ -4,6 +4,8 @@ import { ref } from 'vue'
 
 const { todoList, addTodo, deleteTodo } = useTodoStore()
 
+// 过滤后待办列表
+const filterTodoList = ref<ITodo[]>(todoList)
 // 输入框内容
 const inputContent = ref('')
 // 当前编辑待办项
@@ -26,6 +28,17 @@ function handleAddOrUpdate() {
   inputContent.value = ''
 }
 
+// 查询待办
+function handleSearch() {
+  filterTodoList.value = todoList.filter((todo) => todo.content.includes(inputContent.value.trim()))
+}
+
+// 重置待办
+function handleReset() {
+  filterTodoList.value = todoList
+  inputContent.value = ''
+}
+
 // 编辑待办
 function handleEdit(todo: ITodo) {
   currentTodo.value = todo
@@ -37,10 +50,13 @@ function handleEdit(todo: ITodo) {
   <main class="todo-list-container">
     <h1>Todo List</h1>
     <form @submit.prevent class="input-container">
-      <input type="text" v-model="inputContent" /> <button @click="handleAddOrUpdate">添加</button>
+      <input type="text" v-model="inputContent" />
+      <button type="submit" @click="handleAddOrUpdate">添加</button>
+      <button @click="handleSearch">查询</button>
+      <button @click="handleReset">重置</button>
     </form>
     <ul>
-      <li class="todo" v-for="todo in todoList" :key="todo.id">
+      <li class="todo" v-for="todo in filterTodoList" :key="todo.id">
         <input type="checkbox" v-model="todo.completed" />
         <span class="todo-content" :class="{ completed: todo.completed }" :title="todo.content">{{
           todo.content
